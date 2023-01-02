@@ -1,4 +1,5 @@
 import warnings
+import time
 
 from bayes_opt.constraint import ConstraintModel
 
@@ -302,8 +303,11 @@ class BayesianOptimization(Observable):
 
         iteration = 0
         while not self._queue.empty or iteration < n_iter:
+            starttime = time.time()
             try:
                 x_probe = next(self._queue)
+                if time.time() - starttime > 2:
+                    continue
             except StopIteration:
                 util.update_params()
                 x_probe = self.suggest(util)
